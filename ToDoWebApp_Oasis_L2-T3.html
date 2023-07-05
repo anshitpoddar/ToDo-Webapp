@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo App</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #d0e5ba;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    background-color: #e09076;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+  }
+  
+  h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #202020;
+  }
+  h2{
+    font-size: 24px;
+    color:#202020;
+  }
+  
+  form {
+    margin-bottom: 20px;   
+  }
+  
+  input[type="text"] {
+    padding: 10px;
+    width: 70%;
+    border: none;
+    border-radius: 3px;
+    border-color: black;
+    background-color: #DDC291;
+    outline: none;
+    font-size: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #555555;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+  }
+  
+  button:hover {
+    background-color: #333333;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    
+  }
+  
+  li {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+    border-radius: 5px;
+    border-color: #202020;
+    margin-bottom: 10px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    background-color: #DDC291;
+  }
+  
+  .completed {
+    text-decoration: line-through;
+    color: #888888;
+  }
+  
+  @media (max-width: 480px) {
+    .container {
+      padding: 10px;
+    }
+  
+    h1 {
+      font-size: 24px;
+    }
+  
+    input[type="text"] {
+      width: 60%;
+      font-size: 14px;
+    }
+  
+    button {
+      font-size: 14px;
+    }
+  
+    li {
+      font-size: 14px;
+    }
+  }
+  
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Todo App</h1>
+    <form id="todo-form">
+      <input type="text" id="task-input" placeholder="Enter task...">
+      <button type="submit">Add Task</button>
+    </form>
+    <div id="task-list">
+      <h2>Pending Tasks</h2>
+      <ul id="pending-tasks"></ul>
+      <h2>Completed Tasks</h2>
+      <ul id="completed-tasks"></ul>
+    </div>
+  </div>
+  <script>
+    // Get references to HTML elements
+// Get references to HTML elements
+const form = document.getElementById("todo-form");
+const taskInput = document.getElementById("task-input");
+const pendingTaskList = document.getElementById("pending-tasks");
+const completedTaskList = document.getElementById("completed-tasks");
+
+// Task list array to store tasks
+let tasks = [];
+
+// Function to render tasks
+function renderTasks() {
+  // Clear previous list items
+  pendingTaskList.innerHTML = "";
+  completedTaskList.innerHTML = "";
+
+  // Render pending tasks
+  for (let i = 0; i < tasks.length; i++) {
+    const task = tasks[i];
+
+    const li = document.createElement("li");
+    li.innerHTML = task.title;
+
+    // Add click event to mark task as complete
+    li.addEventListener("click", function() {
+      task.completed = !task.completed;
+      if (task.completed && !task.completedAt) {
+        task.completedAt = new Date().toLocaleString();
+      } else if (!task.completed) {
+        task.completedAt = null;
+      }
+      renderTasks();
+    });
+
+    if (task.completed) {
+      li.classList.add("completed");
+      const completedAtText = document.createElement("span");
+      completedAtText.innerText = `Completed at: ${task.completedAt}`;
+      li.appendChild(completedAtText);
+      completedTaskList.appendChild(li);
+    } else {
+      const createdAtText = document.createElement("span");
+      createdAtText.innerText = `Created at: ${task.createdAt}`;
+      li.appendChild(createdAtText);
+      pendingTaskList.appendChild(li);
+    }
+  }
+}
+
+// Function to handle form submission
+function handleFormSubmit(event) {
+  event.preventDefault();
+
+  const taskTitle = taskInput.value.trim();
+
+  if (taskTitle !== "") {
+    // Create a new task object
+    const task = {
+      title: taskTitle,
+      completed: false,
+      createdAt: new Date().toLocaleString(),
+      completedAt: null
+    };
+
+    // Add task to the tasks array
+    tasks.push(task);
+
+    // Clear the input field
+    taskInput.value = "";
+
+    // Render tasks
+    renderTasks();
+  }
+}
+
+// Event listener for form submission
+form.addEventListener("submit", handleFormSubmit);
+
+// Initial rendering of tasks
+renderTasks();
+
+
+  </script>
+</body>
+</html>
